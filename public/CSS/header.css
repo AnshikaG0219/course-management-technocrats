@@ -1,0 +1,102 @@
+* {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+}
+
+nav {
+    width: 90vw;
+    border-radius: 5px;
+    margin: 50px auto 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: rgba(255, 255, 255, 0.4);
+    padding: 1rem 2vw;
+    position: absolute;
+    left: 5rem;
+}
+nav .logo {
+    color: black;
+    font-weight: bold;
+    font-size: 1.2em;
+}
+nav .link-box {
+    display: flex;
+    gap: 15px;
+    justify-content: space-around;
+}
+nav .link-box .link-item {
+    display: flex;
+    overflow: hidden;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    border-radius: 5px;
+    padding: 7px 18px;
+}
+nav .link-box .link-item:hover {
+    background: #0d2f3d;
+}
+nav .link-box .link-item:hover > .link {
+    transform: translateY(-100px);
+}
+nav .link-box .link-item:hover > .link-icon {
+    transform: translateY(-10px);
+}
+nav .link-box .link-item .link {
+    transform: translateY(9px);
+    transition: 0.5s ease;
+    color: black
+    
+    ;
+}
+nav .link-box .link-item .link-icon {
+    transform: translateY(-70px);
+    transition: 0.5s ease;
+    font-size: 20px;
+    color: white;
+}
+nav .mob-box {
+    background: #0d2f3d;
+    padding: 7px 18px;
+    height: 58px;
+    width: 78px;
+    display: none;
+    justify-content: center;
+    align-items: center;
+    border-radius: 5px;
+}
+nav .mob-box .mob-icon .bar {
+    color: white;
+    font-size: 28px;
+}
+.active {
+    display: flex !important;
+}
+@media (max-width: 630px) {
+    nav {
+        justify-content: space-between;
+   }
+    nav .mob-box {
+        display: flex;
+   }
+    nav .link-box {
+        position: absolute;
+        border-radius: 5px;
+        flex-direction: column;
+        display: none;
+        top: 100px;
+        width: 100%;
+        left: 0;
+        background: #2890bd;
+   }
+    nav .link-box .link-item {
+        border-radius: 0;
+   }
+}
+@media (min-width: 630px) {
+    nav .link-box {
+        display: flex !important;
+   }
+}

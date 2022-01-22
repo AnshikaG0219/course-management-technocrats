@@ -22,7 +22,7 @@
         </div>
         <ul>
             <li>
-                <a href=""><i class="fas fa-th-large"></i>Dashboard</a>
+                <a href="/student/<%= user._id %>"><i class="fas fa-th-large"></i>Dashboard</a>
             </li>
             <li>
                 <a href=""><i class="fas fa-graduation-cap"></i>My Courses</a>
@@ -31,20 +31,12 @@
                 <a href="/buy-course"><i class="fas fa-store"></i>Buy Courses</a>
             </li>
             <li>
-                <a href="/profile"><i class="far fa-user"></i>Profile</a>
+                <a href="/profile/<%= user._id %>"><i class="far fa-user"></i>Profile</a>
             </li>
         </ul>
         <div class="bottom">
-            <h3 class="user-name"><%= student.name %></h3>
+            <h3 class="user-name"><%= user.name %></h3>
             <a class="logout" href="/logout"><i class="fas fa-sign-out-alt"></i>Logout</a>
         </div>
     </nav>
-</body>
-<script>
-    let ham = document.querySelector(".fa-bars");
-    let nav = document.
-    ham.addEventListener("click", function(){
-
-    })
-</script>
-</html>
+<%-include("../partials/dash-footer.ejs")%>

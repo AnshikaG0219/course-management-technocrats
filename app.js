@@ -46,8 +46,7 @@ app.get("/register", function (req, res) {
 app.get("/student/:stud_id", function (req, res) {
   const stud_id = req.params.stud_id;
   if (req.isAuthenticated()) {
-    console.log(req);
-    res.render("student-dash", {student: req.user});
+    res.render("student/student-dash", {user: req.user});
   } else {
     res.redirect("/login");
   }
@@ -55,12 +54,19 @@ app.get("/student/:stud_id", function (req, res) {
 app.get("/teacher/:teach_id", function (req, res) {
   const teach_id = req.params.teach_id;
   if (req.isAuthenticated()) {
-    res.render("teacher-dash", {teacher: req.user});
+    res.render("teacher/teacher-dash", {user: req.user});
   } else {
     res.redirect("/login");
   }
 });
-
+app.get("/profile/:id", function(req, res){
+  if(req.isAuthenticated())
+  {
+    res.render("profile", {user: req.user})
+  }
+  else
+  res.redirect("/login");
+})
 app.get("/logout", function (req, res) {
   req.logout();
   res.redirect("/login");

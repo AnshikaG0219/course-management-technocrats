@@ -1,0 +1,29 @@
+<%- include("teacher-dash.ejs") %>
+<section class="upload-course">
+   <div class="container">
+    <form action="/teacher/<%= user._id %>/add-course" method="POST" enctype="multipart/form-data">
+    <div class="form-group">
+        <label for="course-name">Course Name</label><br>
+        <input type="text" class="form-control" autofocus required name="title" id="course-name" placeholder="Enter Course Name"><br>
+    </div>
+    <div class="form-group">
+        <label for="course-description">Course Description</label><br>
+        <input type="text" class="form-control" name="desc" required id="course-description" placeholder="Enter Course Description"><br>
+    </div>
+    <div class="form-group">
+        <label for="course-price">Course Price</label><br>
+        <input type="number"  class="form-control in" name="price" required id="course-price" placeholder="Enter Course Price"><br>
+    </div>
+    <div class="form-group">
+        <label for="course-thumbnail">Course Thumbnail</label><br>
+        <input type="file"  class="form-control" name="thumbnail"  id="course-thumbnail"><br>
+    </div>
+    <div class="form-group">
+        <label for="course-video">Course Video</label><br>
+        <input type="file"  class="form-control" name="lecture" required id="course-thumbnail"><br>
+    </div>
+        <button type="submit" class="btn btn-secondary">Submit</button>
+    </form>
+   </div>
+</section>
+<%-include("../partials/dash-footer.ejs")%>

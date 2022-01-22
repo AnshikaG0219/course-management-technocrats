@@ -1,27 +1,27 @@
 <% if(user.role === "teacher"){ %> <%-include("teacher/teacher-dash.ejs")%> <%
 }else{ %> <%-include("student/student-dash.ejs")%> <% } %>
 <div class="course-main">
-  <div class="course">
+  <% courses.forEach(function(c){%>
+    <div class="course">
     <a href="" class="card">
-      <img src="Assets/course-img.jpg" class="card__image" alt="" />
+      <img src="/lectures/<%= c.image%>" class="card__image" alt="" />
       <div class="card__overlay">
         <div class="card__header">
           <svg class="card__arc" xmlns="http://www.w3.org/2000/svg">
             <path />
           </svg>
           <i class="fas fa-shopping-cart"></i>
-          <!-- <img class="card__thumb" src="https://www.vhv.rs/dpng/d/16-166133_play-button-circle-icon-png-transparent-png.png" alt="" /> -->
           <div class="card__header-text">
-            <h3 class="card__title">Bitcoin & Cryptocurrency<br />$10</h3>
-            <span class="card__status">Jessica Mathew <br />20 hours</span>
+            <h3 class="card__title"><%= c.title%><br /><%= c.price%></h3>
+            
           </div>
         </div>
         <p class="card__description">
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Asperiores,
-          blanditiis?
+          <%= c.description%>
         </p>
       </div>
     </a>
   </div>
+    <% }) %>
 </div>
 <%-include("partials/dash-footer.ejs")%>

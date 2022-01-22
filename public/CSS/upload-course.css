@@ -1,0 +1,38 @@
+.upload-course{
+    height: 100vh;
+    background-color: #D9ECF2;
+    width: 80%;
+    margin-left: auto;
+    padding: 3rem 0;
+}
+
+.upload-course .container{
+    padding: 0 1.5rem;
+}
+
+.upload-course label{
+    font-size: 1.2rem;
+    padding-bottom: 1rem;
+}
+
+.upload-course input{
+    border: none;
+    background-color: inherit;
+    outline: none;
+    background: none;
+}
+
+ .upload-course input:focus {
+  outline: none;
+  background-color: inherit;
+  border: none;
+}
+
+.upload-course ::placeholder {
+  color: rgb(126, 124, 124);
+  border-bottom: 0.1px solid rgb(162, 158, 158);
+}
+
+.upload-course ::placeholder::after {
+  color: inherit;
+}

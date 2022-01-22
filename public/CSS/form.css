@@ -11,6 +11,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
+    padding-top: 15vw;
     flex-direction: column;
     min-height: 90vh;
     font-family: var(--font-sans);
@@ -41,6 +42,7 @@
 }
 .form-group input{
     border: none;
+    border-bottom: 0.1px solid rgb(190, 188, 188);
     outline: none;
     width: 98%;
     background: none;

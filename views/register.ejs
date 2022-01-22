@@ -1,4 +1,4 @@
-<%- include("partials/header.ejs"); %> 
+<!-- <%- include("partials/header.ejs"); %> 
 <div class="register-main">
     <h1>Register</h1>
     <div class="form-main">
@@ -19,6 +19,46 @@
             <div class="form-group">
                 <label for="password">Password</label>
                 <input type="password" required name="password" id="password">
+            </div>
+            <button class="btn" type="submit">REGISTER</button>
+        </form>
+    </div>
+</div>
+<%- include("partials/footer.ejs"); %> -->
+
+<%- include("partials/header.ejs"); %> 
+<div class="register-main">
+    <h1>Register</h1>
+    <div class="form-main">
+        <img src="Assets/register-login.svg" class="form-illust" alt="log in or register">
+        <form action="/register" method="post" style="margin-top: 40px;">
+            <div class="form-group">
+                <label for="text">Name</label>
+                <input type="text" autofocus required name="name" id="name">
+            </div>
+            <!-- <div class="form-group">
+                <label for="text">Role</label>
+                <input type="text" autofocus required name="role" id="role">
+            </div> -->
+            <div class="form-group">
+                <label for="email">Email</label>
+                <input type="email" required name="username" id="username">
+            </div>
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" required name="password" id="password">
+            </div>
+
+            <div class="form-group" style="margin-bottom: 0px;">
+                <label for="text">Role</label>
+            </div>
+            <div class="form-check" style="margin-left: 20px;">
+                <input class="form-check-input" value="student" type="radio" id="flexRadioDefault1" name="role">
+                <label class="form-check-label" for="flexRadioDefault1" name="role">Student</label>
+            </div>
+            <div class="form-check" style="margin-left: 20px; margin-bottom: 30px;">
+                <input class="form-check-input" value="teacher" type="radio" id="flexRadioDefault2" name="role" checked>
+                <label class="form-check-label" for="flexRadioDefault2" >Educator</label>
             </div>
             <button class="btn" type="submit">REGISTER</button>
         </form>

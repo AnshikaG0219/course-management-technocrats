@@ -1,0 +1,19 @@
+<%- include("partials/header.ejs"); %> 
+<div class="login-main">
+    <h1>Login</h1>
+    <div class="form-main">
+        <img src="Assets/register-login.svg" class="form-illust" alt="log in or register">
+        <form action="/login" method="post">
+            <div class="form-group">
+                <label for="email">Email</label>
+                <input type="email" autofocus required name="username" id="username">
+            </div>
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" required name="password" id="password">
+            </div>
+            <button class="btn" type="submit">LOGIN</button>
+        </form>
+    </div>
+</div>
+<%- include("partials/footer.ejs"); %>

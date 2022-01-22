@@ -23,15 +23,15 @@ Verify the teachers | Submit an identification proof| Purchase course
     * [ ] Verify Teachers
     * [ ] View All Courses
 * [ ] Teacher
-    * [ ] Sign Up
-    * [ ] Login
+    * [X] Sign Up
+    * [X] Login
     * [ ] Add Course
     * [ ] Update Course
     * [ ] Upload Course
     * [ ] View Course
     * [ ] Delete Course
 * [ ] Student
-    * [ ] Sign Up
-    * [ ] Login
+    * [X] Sign Up
+    * [X] Login
     * [ ] Purchase Course
     * [ ] View Course

@@ -1,0 +1,22 @@
+
+<% if(user.role === "teacher"){ %>
+ <%-include("teacher/teacher-dash.ejs")%>
+<% }else{ %>
+  <%-include("student/student-dash.ejs")%>
+<% } %>
+<section class="profile">
+ <div class="profile-card">
+      <h2>User Profile</h2>
+      <table>
+        <tr>
+          <th>Name:</th>
+          <td></td>
+        </tr>
+        <tr>
+          <th>Email:</th>
+          <td><%= user.username %></td>
+        </tr>
+      </table>
+    </div>
+</section>
+<%-include("partials/dash-footer.ejs")%>

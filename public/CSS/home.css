@@ -46,12 +46,14 @@ body{
 }
 
 .choose-us{
-  padding: 7rem 0;
+  margin-top: 7px;
+  padding: 3.1rem 0;
 }
 .choose-us img{
-  margin-top: 7rem;
-  margin-left: 1.5rem;
-  height: 20.5rem;
+  height: 100%;
+  width: auto;
+  margin-top: 3.1rem;
+  margin-left: -10px;
 }
 .benefit-card{
     box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
@@ -78,6 +80,18 @@ body{
     font-family: "Montserrat", sans-serif;
     font-size: 1.2rem;
     color: rgb(144, 136, 136);
+}
+
+.button-28:hover {
+  color: #0a588b;
+  background-color: #f4f4f4;
+  box-shadow: rgba(0, 0, 0, 0.25) 0 8px 15px;
+  transform: translateY(-2px);
+}
+
+.button-28:active {
+  box-shadow: none;
+  transform: translateY(0);
 }
 
 section#counter-stats {

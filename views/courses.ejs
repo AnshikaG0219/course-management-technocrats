@@ -1,9 +1,12 @@
-<% if(user.role === "teacher"){ %> <%-include("teacher/teacher-dash.ejs")%> <%
-}else{ %> <%-include("student/student-dash.ejs")%> <% } %>
+<% if(user.role === "teacher"){ %>
+<%-include("teacher/teacher-dash.ejs")%>
+<%}else{ %>
+<%-include("student/student-dash.ejs")%>
+<% } %>
 <div class="course-main">
   <% courses.forEach(function(c){%>
     <div class="course">
-    <a href="" class="card">
+    <a href="/payment/<%= c._id%>" class="card">
       <img src="/lectures/<%= c.image%>" class="card__image" alt="" />
       <div class="card__overlay">
         <div class="card__header">
@@ -12,8 +15,8 @@
           </svg>
           <i class="fas fa-shopping-cart"></i>
           <div class="card__header-text">
-            <h3 class="card__title"><%= c.title%><br /><%= c.price%></h3>
-            
+            <h3 class="card__title"><span><%= c.title%></span> <span>&#8377; <%= c.price%></span></h3>
+            <span class="card__status">By <%= c.teacherName %> </span>
           </div>
         </div>
         <p class="card__description">

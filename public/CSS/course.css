@@ -10,7 +10,7 @@
 }
 :root {
   --surface-color: #fff;
-  --curve: 20;
+  --curve: 10;
   --blue: #1e4b83;
     --dark-grey: #757575;
     --light-grey: #f4f4f4;
@@ -67,6 +67,7 @@
   background-color: var(--surface-color);
   transform: translateY(-100%);
   transition: 0.2s ease-in-out;
+  justify-content: start;
 }
 
 .card__arc {
@@ -93,12 +94,17 @@
   border-radius: 50%;
   box-shadow: 4px 1px #1177fcad;
 }
+.card__header-text{
+  flex: 9;
+}
 
 .card__title {
-  font-weight: 500;
+  font-weight: bold;
   font-size: 1em;
   margin: 0 0 0.3em;
   color: #17376f;
+  display: flex;
+  justify-content: space-between;
 }
 
 .card__tagline {
@@ -111,7 +117,11 @@
 
 .card__status {
   font-size: 0.8em;
-  color: #000000;
+  color: black;
+  font-family: var(--font-serif);
+  text-transform: capitalize;
+  font-weight: 400;
+  letter-spacing: .5px;
 }
 
 .card__description {
@@ -133,7 +143,9 @@
 .media{
  display: flex;
 }
-
+.media-body{
+  flex: 9;
+}
 .course-teacher .card{
   border-radius: 1%;
   box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 12px;

@@ -1,0 +1,17 @@
+.view-course .container{
+    padding-top: 14rem;
+    padding-left: 1rem;
+}
+
+.view-course h1{
+    text-transform: uppercase;
+}
+
+.view-course .first-h{
+    border-bottom: 1px solid rgb(167, 163, 163);
+}
+
+.content-player{
+    min-height: 30rem;
+    padding: 3rem 0;
+}

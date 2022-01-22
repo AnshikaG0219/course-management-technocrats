@@ -59,18 +59,25 @@ h3{
     color: white;
     text-decoration: none;
 }
-a:hover{
+.sidebar-list a:hover{
     color: white;
 }
 .bottom{
     position: fixed;
     bottom: 0;
-    height: 5vw;
+    height: 14vw;
     display: flex;
     flex-direction: column;
     margin-left: 1vw;
     margin-bottom: 2vw;
     justify-content: space-between;
+}
+.bottom h4{
+    border: .2vw solid white;
+    font-size: 1vw;
+    text-transform: capitalize;
+    border-radius: 2vw;
+    padding: .5vw 1vw;
 }
 .user-name, .logout{
     color: white;
@@ -89,22 +96,27 @@ nav.is_active{
 .profile{
     height: 100vh;
     background-color: #D9ECF2;
-    display: flex;
     width: 80%;
     margin-left: auto;
     justify-content: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
 .profile-card{
+    display: flex table-column;
+    max-width: 40rem;
     background-color: rgba(255, 255, 255, 0.4);
-    padding: 2rem 0;
-    margin: auto 0;
+    padding-bottom: 3rem;
+    margin: 0 auto 2vw;
     text-align: center;
     border-radius: 2%;
     box-shadow: rgba(255, 255, 255, 0.1) 0px 1px 1px 0px inset, rgba(50, 50, 93, 0.25) 0px 50px 100px -20px, rgba(0, 0, 0, 0.3) 0px 30px 60px -30px;
 }
 
 .profile-card h2{
+    padding: 1.6rem 0;
     color: #0a588b;
     font-family: "Playfair Display", serif;
     font-size: 2rem;
@@ -122,4 +134,36 @@ nav.is_active{
 .profile-card th{
     color: #0a588b;
     padding-right: 1rem;
+}
+
+.edit-profile{
+    background-color: #0a588b;
+    font-size: 1.5rem;
+    border: 1px solid rgb(215, 211, 211);
+    border-radius: 2vw;
+    text-align: center;
+    /* height: 2.5rem;
+    width: 10rem; */
+    padding: 0.5vw 2vw;
+}
+
+.edit-profile a{
+    text-decoration: none;
+    color: white;
+}
+
+.edit-profile a:hover{
+    color: white;
+}
+.verify-btn{
+    color: greenyellow;
+    text-decoration: none;
+    border-radius: 2vw;
+    border: .2vw solid greenyellow;
+    text-align: center;
+    transition: .5s;
+}
+.verify-btn:hover{
+    background: rgba(172, 255, 47, 0.418);
+    color: white;
 }

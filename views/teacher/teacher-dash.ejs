@@ -20,6 +20,7 @@
     <link rel="stylesheet" href="/CSS/courses-teacher.css" />
     <link rel="stylesheet" href="/CSS/course.css" />
     <link rel="stylesheet" href="/CSS/upload-course.css" />
+    <link rel="stylesheet" href="/CSS/verify-form.css" />
     <title>Teacher Dashboard</title>
   </head>
 
@@ -32,18 +33,19 @@
       </div>
       <ul class="sidebar-list">
         <li>
-          <a href="/teacher/<%= user._id %> "><i class="fas fa-th-large"></i>Dashboard</a>
+          <!-- <a href="/teacher/<%= user._id %> "><i class="fas fa-th-large"></i>Dashboard</a> -->
+          <a href="/profile/<%= user._id %> "><i class="far fa-user"></i>Profile</a>
         </li>
         <li>
           <a href="/teacher/<%= user._id %>/courses"><i class="fas fa-graduation-cap"></i>Courses</a>
         </li>
         <li>
-          <a href="/profile/<%= user._id %> "
-            ><i class="far fa-user"></i>Profile</a
-          >
+          <a href="/edit-profile/<%= user._id %>"><i class="fas fa-user-edit"></i>Edit profile</a>
         </li>
       </ul>
       <div class="bottom">
+        <h4>Verification Status: <%= user.verified %></h4>
+        <a class="verify-btn" href="/<%= user._id %>/verify">Verify Now</a>
         <h3 class="user-name"><%= user.name %></h3>
         <a class="logout" href="/logout"
           ><i class="fas fa-sign-out-alt"></i>Logout</a

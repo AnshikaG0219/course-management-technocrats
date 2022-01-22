@@ -21,8 +21,20 @@ let storage = multer.diskStorage({
   },
 });
 let upload = multer({
-  storage: storage
-})
+  storage: storage,
+  fileFilter: function (req, file, cb) {
+    if (
+      file.mimetype == "image/png" ||
+      file.mimetype == "image/jpeg" ||
+      file.mimetype == "application/pdf" ||
+      file.mimetype == "video/mp4" ||
+      file.mimetype == "video/mpeg"
+    ) {
+      cb(null, true);
+    } else if (file.mimetype == "application/pdf") {
+    }
+  },
+});
 
 app.use(
   session({
@@ -35,11 +47,20 @@ app.use(passport.initialize());
 app.use(passport.session());
 mongoose.connect(process.env.MONGO_URL, { useNewUrlParser: true });
 
+const purchaseSchema = new mongoose.Schema({
+  stu_ID: String
+});
+
 const userSchema = new mongoose.Schema({
   name: String,
   email: String,
   password: String,
   role: String,
+  verified: { type: Boolean, default: false }
+  // purchase: {
+  //   type: [purchaseSchema],
+  //   default: void 0
+  // },
 });
 const courseSchema = new mongoose.Schema({
   title: String,
@@ -47,14 +68,10 @@ const courseSchema = new mongoose.Schema({
   description: String,
   image: String,
   teacher: String,
-  video: String,
+  teacherName: String,
+  video: [String],
 });
-const purchaseSchema = new mongoose.Schema({
-  courseTitle: String,
-  courseDescription: String,
-  student: String,
-  courseID: String
-})
+
 userSchema.plugin(passportLocalMongoose);
 
 const User = new mongoose.model("User", userSchema);
@@ -64,6 +81,10 @@ const Purchase = new mongoose.model("Purchase", purchaseSchema);
 passport.use(User.createStrategy());
 passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
+
+const dummyPurchase = new Purchase({
+  courseTitle: "hello"
+})
 
 app.get("/", function (req, res) {
   res.render("home");
@@ -82,31 +103,88 @@ app.get("/student/:stud_id", function (req, res) {
     res.redirect("/login");
   }
 });
+app.get("/student/:student_id/courses", function (req, res) {
+  const student_id = req.params.student_id;
+  if (req.isAuthenticated()) {
+    User.find({ _id: student_id })
+      .populate("purchase")
+      .exec(function (e, p) {
+        if (e) console.log(e);
+        console.log(p);
+      });
+    //   Purchase.find({student: student_id}, function(err, c){
+    //     console.log(c);
+    //   res.render("student/my-courses", { user: req.user, courses: c});
+    // })
+  } else {
+    res.redirect("/login");
+  }
+});
 app.get("/teacher/:teach_id/courses", function (req, res) {
   const teach_id = req.params.teach_id;
   if (req.isAuthenticated()) {
-    Course.find({teacher: teach_id}, function(err, c){
-      res.render("teacher/courses", { user: req.user, courses: c});
-    })
+    Course.find({ teacher: teach_id }, function (err, c) {
+      res.render("teacher/courses", { user: req.user, courses: c });
+    });
   } else {
     res.redirect("/login");
   }
 });
 app.get("/buy-course", function (req, res) {
-  if (req.isAuthenticated())
+  if (req.isAuthenticated()) {
+    Course.find({}, function (err, c) {
+      res.render("courses", { user: req.user, courses: c });
+    });
+  } else res.redirect("/login");
+});
+app.get("/payment/:course_id", function (req, res) {
+  let user = req.user._id;
+  const course_id = req.params.course_id;
+  if(req.isAuthenticated())
   {
-    let teacherName = []
-    Course.find({}, function(err, c){
-      c.forEach(element => {
-        User.find({_id: element.teacher}, function(err, teach){
-          console.log(teach);
-          res.render("courses", { user: req.user, courses: c});
+    User.find({_id: user}, function(e, u){
+      console.log("User: ",u);
+      Course.find({_id: course_id}, function(e, c){
+        console.log("Course: ",c);
+        const purchase = new Purchase({
+          stud_id: u[0]._id,
+          c
         })
-      });
-      
+        console.log("Purchase: ",purchase);
+        purchase.save()
+      })
     })
-  } 
-  else res.redirect("/login");
+  }
+  // User.find({ _id: user }, function (err, c) {
+  //   console.log(c);
+  //   let course_id = req.params.course_id;
+  //   if (req.isAuthenticated()) {
+  //     let title;
+  //     let desc;
+  //     Course.find({ _id: course_id }, function (err, c) {
+  //       console.log(c);
+  //       title = c.title;
+  //       desc = c.description;
+  //     });
+  //     const purchaseItem = new Purchase({
+  //       courseTitle: title,
+  //       courseDescription: desc,
+  //       courseID: course_id,
+  //     });
+  //     purchaseItem.save();
+
+  //     c.purchase.push(purchaseItem);
+  //     c.save();
+      
+  //   } else res.redirect("/login");
+  // });
+});
+
+app.get("/:user_id/verify", function (req, res) {
+  const userID = req.params.user_id;
+  if (req.isAuthenticated()) {
+    res.render("verify", { user: req.user });
+  }
 });
 app.get("/teacher/:teach_id/add-course", function (req, res) {
   const teach_id = req.params.teach_id;
@@ -127,16 +205,70 @@ app.get("/profile/:id", function (req, res) {
     res.render("profile", { user: req.user });
   } else res.redirect("/login");
 });
+app.get("/edit-profile/:id", function (req, res) {
+  if (req.isAuthenticated()) {
+    res.render("edit-profile", { user: req.user });
+  } else res.redirect("/login");
+});
+
 app.get("/logout", function (req, res) {
   req.logout();
   res.redirect("/login");
 });
+app.get("/delete/:course_ID", function (req, res) {
+  const c_ID = req.params.course_ID;
+  if (req.isAuthenticated()) {
+    Course.deleteOne({}, function (err) {
+      if (!err) res.redirect(`/teacher/${req.user._id}/courses`);
+    });
+  } else {
+    res.redirect("/login");
+  }
+});
+app.get("/update-course/:course_ID", function (req, res) {
+  if (req.isAuthenticated()) {
+    res.render(`update-course`);
+  } else {
+    res.redirect("/login");
+  }
+});
+app.get("/:user_", function (req, res) {
+  if (req.user.role === "teacher") res.redirect("/teacher/" + req.user._id);
+  else if (req.user.role === "student")
+    res.redirect("/student/" + req.user._id);
+});
+app.get("/view-course/:course_id", function (req, res) {
+  let course_id = req.params.course_id;
+  if (req.isAuthenticated()) {
+    Course.find({ _id: course_id }, function (err, c) {
+      console.log(c);
+      res.render(`view-course`, { user: req.user, course: c });
+    });
+    res;
+  } else {
+    res.redirect("/login");
+  }
+});
+app.post("/update/:user_id", function (req, res) {
+  const newName = req.body.name;
+  const newEmail = req.body.name;
+  const ID = req.params.user_id;
+  if (req.isAuthenticated()) {
+    User.updateOne(
+      { _id: ID },
+      { name: newName, username: newEmail },
+      function (err) {
+        if (!err) {
+          if (req.user.role === "teacher") res.redirect(`/teacher/${ID}`);
+          else if (req.user.role === "student") res.redirect(`/student/${ID}`);
+        }
+      }
+    );
+  }
+});
 app.post(
   "/teacher/:teach_id/add-course",
-  upload.fields([
-    { name: "thumbnail", maxCount: 1 },
-    { name: "lecture", maxCount: 1 },
-  ]),
+  upload.fields([{ name: "thumbnail", maxCount: 1 }, { name: "lecture" }]),
   function (req, res) {
     const t_id = req.params.teach_id;
     if (req.isAuthenticated()) {
@@ -146,7 +278,15 @@ app.post(
         description: req.body.desc,
         image: req.files.thumbnail[0].filename,
         teacher: req.user._id,
-        video: req.files.lecture[0].filename
+        // video: req.files.lecture[0].filename,
+        teacherName: req.user.name,
+      });
+      let lecture_name = [];
+      req.files.lecture.forEach((ele) => {
+        lecture_name.push(ele.filename);
+      });
+      course.video.push({
+        $each: lecture_name,
       });
       course.save(function (err) {
         if (!err) {
@@ -181,7 +321,7 @@ app.post("/login", function (req, res) {
 });
 app.post("/register", function (req, res) {
   User.register(
-    { name: req.body.name, username: req.body.username, role: req.body.role },
+    { name: req.body.name, username: req.body.username, role: req.body.role , purchase: [dummyPurchase]},
     req.body.password,
     function (err, user) {
       if (err) {

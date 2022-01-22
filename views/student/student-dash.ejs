@@ -11,22 +11,23 @@
     <link href="https://unpkg.com/boxicons@2.1.1/css/boxicons.min.css" rel="stylesheet" />
     <link rel="stylesheet" href="/CSS/stuDash.css" />
     <link rel="stylesheet" href="/CSS/course.css" />
+    <link rel="stylesheet" href="/CSS/upload-course.css" />
     <title>Student Dashboard</title>
 </head>
 
 <body>
     <nav class="is_active" id="nav">
         <div class="logo-content">
-            <i class="fas fa-book"></i>
+            <i class="fas fa-book" style="visibility:hidden"></i>
             <h3>iLearn</h3>
-            <i class="fas fa-bars"></i>
+            <i class="fas fa-bars" style="visibility: hidden;"></i>
         </div>
         <ul class="sidebar-list">
             <li>
                 <a href="/student/<%= user._id %>"><i class="fas fa-th-large"></i>Dashboard</a>
             </li>
             <li>
-                <a href=""><i class="fas fa-graduation-cap"></i>My Courses</a>
+                <a href="/student/<%= user._id %>/courses"><i class="fas fa-graduation-cap"></i>My Courses</a>
             </li>
             <li>
                 <a href="/buy-course"><i class="fas fa-store"></i>Buy Courses</a>
@@ -35,7 +36,7 @@
                 <a href="/profile/<%= user._id %>"><i class="far fa-user"></i>Profile</a>
             </li>
         </ul>
-        <div class="bottom">
+        <div class="bottom" style="height: 5vw;">
             <h3 class="user-name"><%= user.name %></h3>
             <a class="logout" href="/logout"><i class="fas fa-sign-out-alt"></i>Logout</a>
         </div>

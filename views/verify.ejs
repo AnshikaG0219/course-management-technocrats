@@ -1,7 +1,7 @@
 <%-include("teacher/teacher-dash.ejs")%>
 <div class="upload-course">
     <div class="container">
-        <form action="/teacher/<%= user._id %>" method="post">
+        <form action="/<%= user._id %>/verify " method="post">
             <label for="">Please upload a Photo Identification Proof</label><br>
             <input type="file" name="identification" id=""><br>
             <button type="submit" class="btn btn-secondary" style="margin-top: 1rem;">Submit</button>

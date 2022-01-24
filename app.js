@@ -6,15 +6,16 @@ const session = require("express-session");
 const passport = require("passport");
 const passportLocalMongoose = require("passport-local-mongoose");
 const multer = require("multer");
-const CustomStrategy = require("passport-custom");
 const app = express();
+
 app.use(express.static(__dirname + "/public"));
 app.set("view engine", "ejs");
 app.use(express.urlencoded({ extended: true }));
 
 let storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, "./public/lectures/");
+    const dir  = './public/uploads/'+file.fieldname+'/';
+    cb(null,dir);
   },
   filename: function (req, file, cb) {
     cb(null, file.fieldname + "_" + Date.now() + "_" + file.originalname);
@@ -47,20 +48,13 @@ app.use(passport.initialize());
 app.use(passport.session());
 mongoose.connect(process.env.MONGO_URL, { useNewUrlParser: true });
 
-const purchaseSchema = new mongoose.Schema({
-  stu_ID: String
-});
-
 const userSchema = new mongoose.Schema({
   name: String,
   email: String,
   password: String,
   role: String,
+  identity: String,
   verified: { type: Boolean, default: false }
-  // purchase: {
-  //   type: [purchaseSchema],
-  //   default: void 0
-  // },
 });
 const courseSchema = new mongoose.Schema({
   title: String,
@@ -76,7 +70,6 @@ userSchema.plugin(passportLocalMongoose);
 
 const User = new mongoose.model("User", userSchema);
 const Course = new mongoose.model("Course", courseSchema);
-const Purchase = new mongoose.model("Purchase", purchaseSchema);
 
 passport.use(User.createStrategy());
 passport.serializeUser(User.serializeUser());
@@ -210,7 +203,6 @@ app.get("/edit-profile/:id", function (req, res) {
     res.render("edit-profile", { user: req.user });
   } else res.redirect("/login");
 });
-
 app.get("/logout", function (req, res) {
   req.logout();
   res.redirect("/login");
@@ -218,7 +210,7 @@ app.get("/logout", function (req, res) {
 app.get("/delete/:course_ID", function (req, res) {
   const c_ID = req.params.course_ID;
   if (req.isAuthenticated()) {
-    Course.deleteOne({}, function (err) {
+    Course.deleteOne({_id: c_ID}, function (err) {
       if (!err) res.redirect(`/teacher/${req.user._id}/courses`);
     });
   } else {
@@ -249,6 +241,17 @@ app.get("/view-course/:course_id", function (req, res) {
     res.redirect("/login");
   }
 });
+app.post("/:user_id/verify", upload.single('identification'), function(req, res){
+  const u_id = req.params.user_id
+  if(req.isAuthenticated())
+  {
+    // User.updateOne({_id: u_id}, {identity: req.file.filename})
+    console.log(req);
+    res.redirect(`/teacher/${u_id}`)
+  }else{
+    res.redirect("/login")
+  }
+})
 app.post("/update/:user_id", function (req, res) {
   const newName = req.body.name;
   const newEmail = req.body.name;

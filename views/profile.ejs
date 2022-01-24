@@ -1,4 +1,3 @@
-
 <% if(user.role === "teacher"){ %>
  <%-include("teacher/teacher-dash.ejs")%>
 <% }else{ %>
@@ -6,10 +5,19 @@
 <% } %>
 <section class="profile">
  <div class="profile-card">
+   <div>
+     <% if(user.role === "teacher"){ %>
+        <img src="https://cdn-images.zety.com/pages/teacher_cover_letter_00.jpg" style="max-height: 10rem ;width: 100%; border-radius: 2%;"alt="">
+    <% }else{ %>
+        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcStJG1IrOZRAYGTiOlqfG1FZM8yyZJYa_JLwk9UDEG1SGdAEdrkpB8l067REU6WGDU0IA&usqp=CAU" style="max-height: 10rem ;width: 100%; border-radius: 2%;" alt="">
+    <% } %>
+    
+  </div>
       <h2>User Profile</h2>
       <table>
         <tr>
           <th>Name:</th>
+          <td><%= user.name %></td>
           <td></td>
         </tr>
         <tr>
@@ -17,6 +25,9 @@
           <td><%= user.username %></td>
         </tr>
       </table>
+    </div>
+     <div class="edit-profile">
+      <a href="" class="">Edit Profile</button>
     </div>
 </section>
 <%-include("partials/dash-footer.ejs")%>

@@ -1,0 +1,61 @@
+<%- include("teacher-dash.ejs") %>
+<section class="course-teacher">
+  <div class="container">
+    <div class="container py-1" style="padding-left: 0">
+      <div class="rowtext">
+        <div class="">
+          <div class="btn-row d-flex flex-row align-items-start">
+            <h1 style="padding-bottom: 2rem">My Courses</h1>
+            <a href="/teacher/<%= user._id %>/add-course" class="button">Add Course</a>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-lg-8">
+          <ul class="list-group card">
+            <% courses.forEach(function(c){ %>
+            <li class="list-group-item">
+              <div class="media align-items-lg-center flex-row flex-lg-row p-3">
+                <div class="media-body order-2 order-lg-1">
+                  <h5 class="mt-0 font-weight-bold mb-2"><a href="/view-course/<%=c._id %>" style="text-decoration: none; color: black"><%=c.title%></a></h5>
+                  <p class="font-italic text-muted mb-0 small">
+                    <%=c.description%>
+                  </p>
+                  <div
+                    class="d-flex align-items-center justify-content-between mt-1 btn-row"
+                  >
+                    <h6 class="font-weight-bold my-2">&#8377; <%=c.price%></h6>
+                    <div class="flex-row justify-content-between">
+                      <a href="/delete/<%= c._id %> "
+                        style="color: rgb(205, 73, 73); font-size: 1.3rem"><i class="fas fa-trash"></i></a>
+                      <a
+                        href="/update-course/<%= c._id %>"
+                        style="
+                          color: rgb(9, 76, 105);
+                          font-size: 1.3rem;
+                          padding-left: 0.7rem;
+                        "
+                        ><i class="far fa-edit"></i
+                      ></a>
+                    </div>
+                  </div>
+                </div>
+                <div>
+                  <img
+                    src="/lectures/<%= c.image%>"
+                    alt="Generic placeholder image"
+                    width="150"
+                    style="padding-right: 2rem"
+                    class="course-img order-1 order-lg-2"
+                  />
+                </div>
+              </div>
+            </li>
+            <% }) %>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<%-include("../partials/dash-footer.ejs")%>

@@ -78,9 +78,12 @@ app.get("/logout", login.logout);
 app.get("/delete/:course_ID", teacher.deleteCourse);
 app.get("/update-course/:course_ID", teacher.updateCourse);
 app.get("/:user", function (req, res) {
-  if (req.user.role === "teacher") res.redirect("/teacher/" + req.user._id);
-  else if (req.user.role === "student")
+  if(req.isAuthenticated())
+  {
+    if (req.user.role === "teacher") res.redirect("/teacher/" + req.user._id);
+    else if (req.user.role === "student")
     res.redirect("/student/" + req.user._id);
+  }
 });
 app.get("/view-course/:course_id", teacher.viewCourse);
 app.post("/:user_id/verify", upload.single("identification"), teacher.verifyPOST);

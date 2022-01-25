@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 const passport = require("passport");
-const courseSchema = require("./course").courseSchema
+const courseSchema = require("./course").courseSchema;
 const passportLocalMongoose = require("passport-local-mongoose");
 
 const userSchema = new mongoose.Schema({
@@ -10,7 +10,7 @@ const userSchema = new mongoose.Schema({
   role: String,
   identity: String,
   verified: { type: Boolean, default: false },
-  purchase: [courseSchema]
+  purchase: [courseSchema],
 });
 
 userSchema.plugin(passportLocalMongoose);

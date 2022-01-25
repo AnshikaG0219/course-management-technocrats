@@ -1,6 +1,45 @@
 <%- include("teacher-dash.ejs") %>
-<div class="update-course">
-    <h2>Update Course</h2>
+<section class="upload-course">
+   <div class="container">
+    <form action="/teacher/<%= course_id %>/update-course-name" method="POST">
+    <div class="form-group">
+        <label for="course-name">Course Name</label><button style="background-color: inherit; border: none; font-size: 1.4rem;"><i class="fas fa-check-square"></i></button><br>
+        <input type="text" class="form-control" autofocus name="title" required id="course-name" placeholder="Enter Course Name">
+        
+    </div>
+    </form>
     
-</div>
+    <form action="/teacher/<%= course_id %>/update-course-desc" method="POST">
+    <div class="form-group">
+        <label for="course-description">Course Description</label><button style="background-color: inherit; border: none; font-size: 1.4rem;"><i class="fas fa-check-square"></i></button><br>
+        <input type="text" class="form-control" name="desc" required id="course-description" placeholder="Enter Course Description"><br>
+    </div>
+    </form>
+
+    <form action="/teacher/<%= course_id %>/update-course-price" method="POST">
+         <div class="form-group">
+            <label for="course-price">Course Price</label><button style="background-color: inherit; border: none; font-size: 1.4rem;"><i class="fas fa-check-square"></i></button><br>
+            <input type="number"  class="form-control in" required name="price" id="course-price" placeholder="Enter Course Price"><br>
+        </div>
+    </form>
+
+   <form action="/teacher/<%= course_id %>/update-course-thumbnail" method="POST" enctype="multipart/form-data">
+        <div class="form-group">
+            <label for="course-thumbnail">Course Thumbnail</label>
+            <button style="background-color: inherit; border: none; font-size: 1.4rem;"><i class="fas fa-check-square"></i></button><br>
+            <input type="file"  class="form-control" required name="thumbnail"  id="course-thumbnail"><br>
+        </div>
+   </form>
+    
+
+   <form action="/teacher/<%= course_id %>/add-course-video" method="POST" enctype="multipart/form-data">
+    <div class="form-group">
+        <label for="course-video">Course Videos</label>
+        <button style="background-color: inherit; border: none; font-size: 1.4rem;"><i class="fas fa-check-square"></i></button><br>
+        <input type="file"  class="form-control" name="lecture" required id="course-thumbnail" multiple><br>
+    </div>
+   </form>
+
+   </div>
+</section>
 <%-include("../partials/dash-footer.ejs")%>

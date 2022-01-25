@@ -6,24 +6,27 @@
 <div class="course-main">
   <% courses.forEach(function(c){%>
     <div class="course">
-    <a href="/payment/<%= c._id%>" class="card">
-      <img src="/lectures/<%= c.image%>" class="card__image" alt="" />
-      <div class="card__overlay">
-        <div class="card__header">
-          <svg class="card__arc" xmlns="http://www.w3.org/2000/svg">
-            <path />
-          </svg>
-          <i class="fas fa-shopping-cart"></i>
-          <div class="card__header-text">
-            <h3 class="card__title"><span><%= c.title%></span> <span>&#8377; <%= c.price%></span></h3>
-            <span class="card__status">By <%= c.teacherName %> </span>
+      <form class="" id="temp" action="/payment/<%=c._id%>" method="post">
+        <a class="card">
+          <img src="/lectures/<%= c.image%>" class="card__image" alt="" />
+          <div class="card__overlay">
+            <div class="card__header">
+              <svg class="card__arc" xmlns="http://www.w3.org/2000/svg">
+                <path />
+              </svg>
+             <button type="submit" name="button" style="background: none; border: none; cursor: pointer"><i class="fas fa-shopping-cart" style="font-size: 1.3rem;"></i></button>
+              <div class="card__header-text">
+                <h3 class="card__title"><span><%= c.title%></span> <span>&#8377; <%= c.price%></span></h3>
+                <span class="card__status">By <%= c.teacherName %> </span>
+              </div>
+            </div>
+            <p class="card__description">
+              <%= c.description%>
+            </p>
           </div>
-        </div>
-        <p class="card__description">
-          <%= c.description%>
-        </p>
-      </div>
-    </a>
+        </a>
+      </form>
+
   </div>
     <% }) %>
 </div>

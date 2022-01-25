@@ -152,6 +152,30 @@
   background-color: inherit;
 }
 
+.course-teacher .list-group{
+  list-style-type: none;
+  padding-left: 0;
+}
+
 .course-teacher .list-group-item{
+  padding-left: 20px;
   background-color: rgba(249, 249, 252, 0.477);
+  border-bottom: 1px solid rgb(199, 199, 199);
+}
+
+.course-teacher{
+    height: 100vh;
+    background-color: #D9ECF2;
+    width: 80%;
+    padding: 2rem 0;
+    margin-left: auto;
+}
+.course-teacher .container{
+    padding: 0 1.5rem;
+}
+
+.btn-row{
+  display: flex;
+  align-items:center;
+  justify-content: space-between;
 }

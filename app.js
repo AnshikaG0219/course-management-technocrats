@@ -7,6 +7,7 @@ const passport = require("passport");
 const passportLocalMongoose = require("passport-local-mongoose");
 const multer = require("multer");
 const app = express();
+const User = require('./models/user')
 
 app.use(express.static(__dirname + "/public"));
 app.set("view engine", "ejs");
@@ -48,36 +49,14 @@ app.use(passport.initialize());
 app.use(passport.session());
 mongoose.connect(process.env.MONGO_URL, { useNewUrlParser: true });
 
-const userSchema = new mongoose.Schema({
-  name: String,
-  email: String,
-  password: String,
-  role: String,
-  identity: String,
-  verified: { type: Boolean, default: false }
-});
-const courseSchema = new mongoose.Schema({
-  title: String,
-  price: Number,
-  description: String,
-  image: String,
-  teacher: String,
-  teacherName: String,
-  video: [String],
-});
+// userSchema.plugin(passportLocalMongoose);
 
-userSchema.plugin(passportLocalMongoose);
-
-const User = new mongoose.model("User", userSchema);
-const Course = new mongoose.model("Course", courseSchema);
+// const User = new mongoose.model("User", userSchema);
+// const Course = new mongoose.model("Course", courseSchema);
 
 passport.use(User.createStrategy());
 passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
-
-const dummyPurchase = new Purchase({
-  courseTitle: "hello"
-})
 
 app.get("/", function (req, res) {
   res.render("home");
@@ -99,16 +78,9 @@ app.get("/student/:stud_id", function (req, res) {
 app.get("/student/:student_id/courses", function (req, res) {
   const student_id = req.params.student_id;
   if (req.isAuthenticated()) {
-    User.find({ _id: student_id })
-      .populate("purchase")
-      .exec(function (e, p) {
-        if (e) console.log(e);
-        console.log(p);
-      });
-    //   Purchase.find({student: student_id}, function(err, c){
-    //     console.log(c);
-    //   res.render("student/my-courses", { user: req.user, courses: c});
-    // })
+    User.findOne({_id: student_id}, function(err, st){
+      res.render('student/my-courses', {user: req.user, courses: st.purchase});
+    })
   } else {
     res.redirect("/login");
   }
@@ -130,47 +102,23 @@ app.get("/buy-course", function (req, res) {
     });
   } else res.redirect("/login");
 });
-app.get("/payment/:course_id", function (req, res) {
+
+app.post("/payment/:course_id", function (req, res) {
   let user = req.user._id;
   const course_id = req.params.course_id;
+  console.log("course_id: "+course_id)
   if(req.isAuthenticated())
   {
     User.find({_id: user}, function(e, u){
-      console.log("User: ",u);
-      Course.find({_id: course_id}, function(e, c){
-        console.log("Course: ",c);
-        const purchase = new Purchase({
-          stud_id: u[0]._id,
-          c
-        })
-        console.log("Purchase: ",purchase);
-        purchase.save()
+
+      Course.findOne({_id: course_id}, function(e, c){
+        u[0].purchase.push(c);
+        u[0].save(res.redirect('/buy-course'));
       })
     })
+  }else {
+    res.redirect("/login");
   }
-  // User.find({ _id: user }, function (err, c) {
-  //   console.log(c);
-  //   let course_id = req.params.course_id;
-  //   if (req.isAuthenticated()) {
-  //     let title;
-  //     let desc;
-  //     Course.find({ _id: course_id }, function (err, c) {
-  //       console.log(c);
-  //       title = c.title;
-  //       desc = c.description;
-  //     });
-  //     const purchaseItem = new Purchase({
-  //       courseTitle: title,
-  //       courseDescription: desc,
-  //       courseID: course_id,
-  //     });
-  //     purchaseItem.save();
-
-  //     c.purchase.push(purchaseItem);
-  //     c.save();
-      
-  //   } else res.redirect("/login");
-  // });
 });
 
 app.get("/:user_id/verify", function (req, res) {
@@ -324,7 +272,7 @@ app.post("/login", function (req, res) {
 });
 app.post("/register", function (req, res) {
   User.register(
-    { name: req.body.name, username: req.body.username, role: req.body.role , purchase: [dummyPurchase]},
+    { name: req.body.name, username: req.body.username, role: req.body.role , purchase: []},
     req.body.password,
     function (err, user) {
       if (err) {
@@ -345,6 +293,6 @@ app.post("/register", function (req, res) {
     }
   );
 });
-app.listen(3000, function () {
+app.listen(4000, function () {
   console.log("Server started at port 3000");
 });

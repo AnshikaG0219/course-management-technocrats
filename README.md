@@ -8,7 +8,7 @@ View all Course details | Add, update, upload, view or delete course| View the c
 Verify the teachers | Submit an identification proof| Purchase course
 ---
 ### Compulsory Features
-* [ ] Module Rights
+* [x] Module Rights
 * [ ] Admin Dashboard
 * [ ] Payment Gateway
 ---
@@ -22,16 +22,16 @@ Verify the teachers | Submit an identification proof| Purchase course
 * [ ] Admin
     * [ ] Verify Teachers
     * [ ] View All Courses
-* [ ] Teacher
+* [x] Teacher
     * [X] Sign Up
     * [X] Login
-    * [ ] Add Course
-    * [ ] Update Course
-    * [ ] Upload Course
-    * [ ] View Course
-    * [ ] Delete Course
+    * [x] Add Course
+    * [x] Update Course
+    * [x] Upload Course
+    * [x] View Course
+    * [x] Delete Course
 * [ ] Student
     * [X] Sign Up
     * [X] Login
     * [ ] Purchase Course
-    * [ ] View Course
+    * [x] View Course

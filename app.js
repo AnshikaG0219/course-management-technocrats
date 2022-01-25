@@ -6,15 +6,24 @@ const session = require("express-session");
 const passport = require("passport");
 const passportLocalMongoose = require("passport-local-mongoose");
 const multer = require("multer");
-const CustomStrategy = require("passport-custom");
 const app = express();
+const User = require('./models/user')
+const Course = require("./models/course").Course
+const login = require('./routes/login')
+const register = require('./routes/register')
+const student = require('./routes/student')
+const teacher = require('./routes/teacher')
+const profile = require('./routes/profile');
+const course = require("./models/course");
+
 app.use(express.static(__dirname + "/public"));
 app.set("view engine", "ejs");
 app.use(express.urlencoded({ extended: true }));
 
 let storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, "./public/lectures/");
+    const dir  = './public/uploads/'+file.fieldname+'/';
+    cb(null,dir);
   },
   filename: function (req, file, cb) {
     cb(null, file.fieldname + "_" + Date.now() + "_" + file.originalname);
@@ -46,147 +55,33 @@ app.use(
 app.use(passport.initialize());
 app.use(passport.session());
 mongoose.connect(process.env.MONGO_URL, { useNewUrlParser: true });
-
-const purchaseSchema = new mongoose.Schema({
-  stu_ID: String
-});
-
-const courseSchema = new mongoose.Schema({
-  title: String,
-  price: Number,
-  description: String,
-  image: String,
-  teacher: String,
-  teacherName: String,
-  video: [String],
-});
-
-const userSchema = new mongoose.Schema({
-  name: String,
-  email: String,
-  password: String,
-  role: String,
-  verified: { type: Boolean, default: false },
-  purchase: [courseSchema]
-});
-
-
-userSchema.plugin(passportLocalMongoose);
-
-const User = new mongoose.model("User", userSchema);
-const Course = new mongoose.model("Course", courseSchema);
-const Purchase = new mongoose.model("Purchase", purchaseSchema);
-
 passport.use(User.createStrategy());
 passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
 
-const dummyPurchase = new Purchase({
-  courseTitle: "hello"
-})
-
 app.get("/", function (req, res) {
   res.render("home");
 });
-app.get("/login", function (req, res) {
-  res.render("login");
-});
-app.get("/register", function (req, res) {
-  res.render("register");
-});
-app.get("/student/:stud_id", function (req, res) {
-  const stud_id = req.params.stud_id;
-  if (req.isAuthenticated()) {
-    res.render("student/student-dash", { user: req.user });
-  } else {
-    res.redirect("/login");
-  }
-});
-app.get("/student/:student_id/courses", function (req, res) {
-  const student_id = req.params.student_id;
-  if (req.isAuthenticated()) {
-    User.findOne({_id: student_id}, function(err, st){
-      res.render('student/my-courses', {user: req.user, courses: st.purchase});
-    })
-  } else {
-    res.redirect("/login");
-  }
-});
-app.get("/teacher/:teach_id/courses", function (req, res) {
-  const teach_id = req.params.teach_id;
-  if (req.isAuthenticated()) {
-    Course.find({ teacher: teach_id }, function (err, c) {
-      res.render("teacher/courses", { user: req.user, courses: c });
-    });
-  } else {
-    res.redirect("/login");
-  }
-});
-app.get("/buy-course", function (req, res) {
-  if (req.isAuthenticated()) {
-    Course.find({}, function (err, c) {
-      res.render("courses", { user: req.user, courses: c });
-    });
-  } else res.redirect("/login");
-});
-
-app.post("/payment/:course_id", function (req, res) {
-  let user = req.user._id;
-  const course_id = req.params.course_id;
-  console.log("course_id: "+course_id)
-  if(req.isAuthenticated())
-  {
-    User.find({_id: user}, function(e, u){
-
-      Course.findOne({_id: course_id}, function(e, c){
-        u[0].purchase.push(c);
-        u[0].save(res.redirect('/buy-course'));
-      })
-    })
-  }else {
-    res.redirect("/login");
-  }
-});
-
-app.get("/:user_id/verify", function (req, res) {
-  const userID = req.params.user_id;
-  if (req.isAuthenticated()) {
-    res.render("verify", { user: req.user });
-  }
-});
-app.get("/teacher/:teach_id/add-course", function (req, res) {
-  const teach_id = req.params.teach_id;
-  if (req.isAuthenticated())
-    res.render("teacher/upload-course", { user: req.user });
-  else res.redirect("/login");
-});
-app.get("/teacher/:teach_id", function (req, res) {
-  const teach_id = req.params.teach_id;
-  if (req.isAuthenticated()) {
-    res.render("teacher/teacher-dash", { user: req.user });
-  } else {
-    res.redirect("/login");
-  }
-});
-app.get("/profile/:id", function (req, res) {
-  if (req.isAuthenticated()) {
-    res.render("profile", { user: req.user });
-  } else res.redirect("/login");
-});
-app.get("/edit-profile/:id", function (req, res) {
-  if (req.isAuthenticated()) {
-    res.render("edit-profile", { user: req.user });
-  } else res.redirect("/login");
-});
-
+app.get("/login", login.loginGET);
+app.get("/register", register.registerGET);
+app.get("/student/:stud_id", student.studentDash);
+app.get("/student/:student_id/courses", student.myCourses);
+app.get("/teacher/:teach_id", teacher.teacherDash);
+app.get("/teacher/:teach_id/courses", teacher.myCourses);
+app.get("/buy-course", student.buyCourse);
+app.post("/payment/:course_id", student.pay);
+app.get("/:user_id/verify", teacher.verifyGET);
+app.get("/teacher/:teach_id/add-course", teacher.addCourse);
+app.get("/profile/:id", profile.profileGET);
+app.get("/edit-profile/:id", profile.editProfile);
 app.get("/logout", function (req, res) {
-  req.logout();
-  res.redirect("/login");
+req.logout();
+res.redirect("/login");
 });
 app.get("/delete/:course_ID", function (req, res) {
   const c_ID = req.params.course_ID;
   if (req.isAuthenticated()) {
-    Course.deleteOne({}, function (err) {
+    Course.deleteOne({_id: c_ID}, function (err) {
       if (!err) res.redirect(`/teacher/${req.user._id}/courses`);
     });
   } else {
@@ -195,7 +90,7 @@ app.get("/delete/:course_ID", function (req, res) {
 });
 app.get("/update-course/:course_ID", function (req, res) {
   if (req.isAuthenticated()) {
-    res.render(`update-course`);
+    res.render(`teacher/update-course`, {user: req.user, course_id: req.params.course_ID});
   } else {
     res.redirect("/login");
   }
@@ -209,7 +104,6 @@ app.get("/view-course/:course_id", function (req, res) {
   let course_id = req.params.course_id;
   if (req.isAuthenticated()) {
     Course.find({ _id: course_id }, function (err, c) {
-      console.log(c);
       res.render(`view-course`, { user: req.user, course: c });
     });
     res;
@@ -217,6 +111,16 @@ app.get("/view-course/:course_id", function (req, res) {
     res.redirect("/login");
   }
 });
+app.post("/:user_id/verify", upload.single('identification'), function(req, res){
+  const u_id = req.params.user_id
+  if(req.isAuthenticated())
+  {
+    // User.updateOne({_id: u_id}, {identity: req.file.filename})
+    res.redirect(`/teacher/${u_id}`)
+  }else{
+    res.redirect("/login")
+  }
+})
 app.post("/update/:user_id", function (req, res) {
   const newName = req.body.name;
   const newEmail = req.body.name;
@@ -234,8 +138,98 @@ app.post("/update/:user_id", function (req, res) {
     );
   }
 });
-app.post(
-  "/teacher/:teach_id/add-course",
+
+app.post("/teacher/:course_id/update-course-name", function (req, res) {
+    if (req.isAuthenticated()) {
+       Course.findOneAndUpdate({_id: req.params.course_id}, {$set: {title: req.body.title}},{new: true}, function(err,c){
+       if(err) console.log(err);
+       else{
+         res.redirect(`/teacher/${req.user._id}/courses`)
+       }
+     })
+    } else {
+      res.redirect("/login");
+    }
+  }
+);
+
+app.post("/teacher/:course_id/update-course-desc", function (req, res) {
+    if (req.isAuthenticated()) {
+       Course.findOneAndUpdate({_id: req.params.course_id}, {$set: {description: req.body.desc}},{new: true}, function(err,c){
+       if(err) console.log(err);
+       else{
+          res.redirect(`/teacher/${req.user._id}/courses`);
+       }
+     })
+    } else {
+      res.redirect("/login");
+    }
+  }
+);
+
+app.post("/teacher/:course_id/update-course-price", function (req, res) {
+    if (req.isAuthenticated()) {
+       Course.findOneAndUpdate({_id: req.params.course_id}, {$set: {price: req.body.price}},{new: true}, function(err,c){
+       if(err) console.log(err);
+       else{
+          res.redirect(`/teacher/${req.user._id}/courses`);
+       }
+     })
+    } else {
+      res.redirect("/login");
+    }
+  }
+);
+
+
+app.post("/teacher/:course_id/update-course-thumbnail",
+  upload.fields([{ name: "thumbnail", maxCount: 1 }]),
+  function (req, res) {
+    console.log(req.body)
+    if (req.isAuthenticated()) {
+       Course.findOneAndUpdate({_id: req.params.course_id}, {$set: {image: req.files.thumbnail[0].filename}},{new: true}, function(err,c){
+       if(err) console.log(err);
+       else{
+          res.redirect(`/teacher/${req.user._id}/courses`);
+       }
+     })
+    } else {
+      res.redirect("/login");
+    }
+  }
+);
+
+app.post("/teacher/:course_id/add-course-video",
+  upload.fields([{ name: "lecture" }]),
+  function (req, res) {
+    const s_id = req.params.course_id;
+    if (req.isAuthenticated()) {
+
+      let lecture_name = [];
+      req.files.lecture.forEach((ele) => {
+        lecture_name.push(ele.filename);
+      });
+
+      Course.findOne({_id: s_id}, function(err,c){
+          c.video.push({
+          $each: lecture_name,
+        });
+
+        c.save(function (err) {
+        if (!err) {
+          res.redirect(`/teacher/${req.user._id}/courses`);
+        } else {
+          console.log(err);
+        }
+      });
+      }) 
+    } else {
+      res.redirect("/login");
+    }
+  }
+);
+
+app.post("/teacher/:teach_id/add-course",
   upload.fields([{ name: "thumbnail", maxCount: 1 }, { name: "lecture" }]),
   function (req, res) {
     const t_id = req.params.teach_id;
@@ -268,48 +262,9 @@ app.post(
     }
   }
 );
-app.post("/login", function (req, res) {
-  const user = new User({
-    username: req.body.username,
-    password: req.body.password,
-  });
-  req.login(user, function (err) {
-    if (err) {
-      console.log(err);
-    } else {
-      passport.authenticate("local")(req, res, function () {
-        if (req.user.role === "teacher")
-          res.redirect("/teacher/" + req.user._id);
-        else if (req.user.role === "student")
-          res.redirect("/student/" + req.user._id);
-        else if (req.user.role === "admin") res.send("ADMIN");
-      });
-    }
-  });
-});
-app.post("/register", function (req, res) {
-  User.register(
-    { name: req.body.name, username: req.body.username, role: req.body.role , purchase: []},
-    req.body.password,
-    function (err, user) {
-      if (err) {
-        console.log(err);
-        res.redirect("/register");
-      } else {
-        passport.authenticate("local")(req, res, function () {
-          if (user.role === "teacher") res.redirect("/teacher/" + req.user._id);
-          else if (user.role === "student")
-            res.redirect("/student/" + req.user._id);
-          else if (user.role === "admin") res.send("ADMIN");
-          else {
-            console.log("Wrong role");
-            res.send("wrong role");
-          }
-        });
-      }
-    }
-  );
-});
-app.listen(3000, function () {
+app.post("/login", login.loginPOST);
+app.post("/register", register.registerPOST);
+
+app.listen(process.env.PORT || 3000, function () {
   console.log("Server started at port 3000");
 });

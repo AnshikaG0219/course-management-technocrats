@@ -2,6 +2,7 @@ const passport = require("passport");
 const User = require("../models/user");
 const Course = require("../models/course").Course;
 const mongoose = require("mongoose");
+const Video = require("../models/video").Video
 
 exports.teacherDash = (req, res) => {
   const teach_id = req.params.teach_id;
@@ -45,22 +46,26 @@ exports.addCourse = (req, res) => {
 exports.addCoursePOST = (req, res) => {
   const t_id = req.params.teach_id;
   if (req.isAuthenticated()) {
+    let lectures = [];
+    req.files.lecture.forEach((ele) => {
+      const video = new Video({
+        title: ele.originalname,
+        url: ele.filename,
+        filetype: ele.mimetype
+      })
+      video.save()
+      lectures.push(video);
+    });
     const course = new Course({
       title: req.body.title,
       price: req.body.price,
       description: req.body.desc,
       image: req.files.thumbnail[0].filename,
       teacher: req.user._id,
-      // video: req.files.lecture[0].filename,
-      teacherName: req.user.name,
+      video: lectures,
+      teacherName: req.user.name
     });
-    let lecture_name = [];
-    req.files.lecture.forEach((ele) => {
-      lecture_name.push(ele.filename);
-    });
-    course.video.push({
-      $each: lecture_name,
-    });
+    console.log(course);
     course.save(function (err) {
       if (!err) {
         res.redirect(`/teacher/${t_id}/courses`);

@@ -13,14 +13,16 @@ exports.editProfile = (req, res) => {
   } else res.redirect("/login");
 };
 exports.updateProfile = (req, res) => {
-  const newName = req.body.name;
-  const newEmail = req.body.email;
+  if(req.body.name)
+  {
+    const newName = req.body.name;
+  }
+
   const ID = req.params.user_id;
   if (req.isAuthenticated()) {
-    console.log(req);
     User.updateOne(
       { _id: ID },
-      { name: newName, username: newEmail },
+      {name: newName},
       function (err) {
         if (!err) {
           if (req.user.role === "teacher") res.redirect(`/teacher/${ID}`);

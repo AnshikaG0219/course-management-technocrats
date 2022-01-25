@@ -18,7 +18,7 @@ $('.counting').each(function() {
   });  
 });
 
-var triggerTabList = [].slice.call(document.querySelectorAll('#myTab a'))
+var triggerTabList = [].slice.call(document.querySelectorAll('#list-tab a'))
 triggerTabList.forEach(function (triggerEl) {
   var tabTrigger = new bootstrap.Tab(triggerEl)
 

@@ -1,0 +1,51 @@
+header, main, footer {
+    padding-left: 240px;
+}
+
+body {
+    background: white;
+}
+
+@media only screen and (max-width: 992px) {
+    header, main, footer {
+        padding-left: 0;
+    }
+}
+
+.decision {
+    position: absolute;
+    top: 85%;
+    left: 60%;
+    -webkit-transform: translate(-50%, -50%);
+  }
+  
+  .buttons {
+      display: flex;
+      list-style-type: none;
+  }
+
+  .btn {
+    background-image: linear-gradient(to right, #fd287c, #ff7654);
+    border-radius: 50px;
+    margin-right: 60px;
+    margin-left: 50px;
+    width: 200px;
+    height: 60px;
+    font-family: helvetica;
+    font-size: 30px;
+    color: white;
+    border: none;
+    outline: none;
+    cursor: pointer;
+  }
+  
+  .btn:hover {
+    box-shadow: 0 2px 4px 0 rgba(0,0,0,0.24), 0 2px 4px 0 rgba(0,0,0,0.19);
+    outline: none;
+    transform: scale(1.1);
+  }
+  
+  .btn:active {
+    transform: scale(0.990);
+    outline: none;
+  }

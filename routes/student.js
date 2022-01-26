@@ -13,7 +13,7 @@ const stud_id = req.params.stud_id;
 exports.myCourses = (req, res) => {
 const student_id = req.params.student_id;
   if (req.isAuthenticated()) {
-    User.findOne({_id: student_id}, function(err, st){
+    User.findOne({_id: student_id}, function(err, st) {
       res.render('student/my-courses', {user: req.user, courses: st.purchase});
     })
   } else {
@@ -30,16 +30,15 @@ exports.buyCourse = (req, res) => {
 exports.pay = (req, res) => {
   let user = req.user._id;
   const course_id = req.params.course_id;
-  if(req.isAuthenticated())
-  {
-    User.find({_id: user}, function(e, u){
+  if(req.isAuthenticated()) {
+    User.find({_id: user}, function(e, u) {
 
-      Course.findOne({_id: course_id}, function(e, c){
+      Course.findOne({_id: course_id}, function(e, c) {
         u[0].purchase.push(c);
         u[0].save(res.redirect('/buy-course'));
       })
     })
-  }else {
+  } else {
     res.redirect("/login");
   }
 }

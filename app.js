@@ -62,6 +62,23 @@ passport.deserializeUser(User.deserializeUser());
 app.get("/", function (req, res) {
   res.render("home");
 });
+
+app.get("/admin-dashboard", (req, res) => {
+  res.render("admin/admin-dash");
+})
+
+app.get("/verify-teacher", (req, res) => {
+  res.render("admin/verify-teacher");
+})
+
+app.get("/teacher-details", (req, res) => {
+  res.render("admin/teacher-details");
+})
+
+app.get("/course-details", (req, res) => {
+  res.render("admin/course-details");
+})
+
 app.get("/login", login.loginGET);
 app.get("/register", register.registerGET);
 app.get("/student/:stud_id", student.studentDash);
@@ -78,8 +95,7 @@ app.get("/logout", login.logout);
 app.get("/delete/:course_ID", teacher.deleteCourse);
 app.get("/update-course/:course_ID", teacher.updateCourse);
 app.get("/:user", function (req, res) {
-  if(req.isAuthenticated())
-  {
+  if(req.isAuthenticated()) {
     if (req.user.role === "teacher") res.redirect("/teacher/" + req.user._id);
     else if (req.user.role === "student")
     res.redirect("/student/" + req.user._id);
@@ -88,7 +104,7 @@ app.get("/:user", function (req, res) {
 app.get("/view-course/:course_id", teacher.viewCourse);
 app.post("/:user_id/verify", upload.single("identification"), teacher.verifyPOST);
 app.post("/update/:user_id", profile.updateProfile);
-app.post("/teacher/:course_id/update-course-name",teacher.updateCourseNamePOST);
+app.post("/teacher/:course_id/update-course-name", teacher.updateCourseNamePOST);
 app.post("/teacher/:course_id/update-course-desc", teacher.updateCourseDescPOST);
 app.post("/teacher/:course_id/update-course-price", teacher.updateCoursePricePOST);
 app.post(

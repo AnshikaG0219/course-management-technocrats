@@ -8,42 +8,19 @@ const passportLocalMongoose = require("passport-local-mongoose");
 const multer = require("multer");
 const app = express();
 const User = require("./models/user");
-const Course = require("./models/course").Course;
 const login = require("./routes/login");
 const register = require("./routes/register");
 const student = require("./routes/student");
 const teacher = require("./routes/teacher");
 const profile = require("./routes/profile");
-const course = require("./models/course");
+const {GridFsStorage} = require("multer-gridfs-storage");
+const grid = require("gridfs-stream");
+const methodOverride = require("method-override");
 
+app.use(methodOverride("_method"));
 app.use(express.static(__dirname + "/public"));
 app.set("view engine", "ejs");
 app.use(express.urlencoded({ extended: true }));
-
-let storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    const dir = "./public/uploads/" + file.fieldname + "/";
-    cb(null, dir);
-  },
-  filename: function (req, file, cb) {
-    cb(null, file.fieldname + "_" + Date.now() + "_" + file.originalname);
-  },
-});
-let upload = multer({
-  storage: storage,
-  fileFilter: function (req, file, cb) {
-    if (
-      file.mimetype == "image/png" ||
-      file.mimetype == "image/jpeg" ||
-      file.mimetype == "application/pdf" ||
-      file.mimetype == "video/mp4" ||
-      file.mimetype == "video/mpeg"
-    ) {
-      cb(null, true);
-    } else if (file.mimetype == "application/pdf") {
-    }
-  },
-});
 
 app.use(
   session({
@@ -58,6 +35,48 @@ mongoose.connect(process.env.MONGO_URL, { useNewUrlParser: true });
 passport.use(User.createStrategy());
 passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
+
+let gfs;
+// conn.once("open", () => {
+// });
+
+let storage = new GridFsStorage({
+  url: process.env.MONGO_URL,
+  file: (req, file) => {
+    return new Promise((resolve, reject) => {
+      const filename =
+        file.fieldname + "_" + Date.now() + "_" + file.originalname;
+      const fileInfo = {
+        filename: filename,
+        bucketName: file.fieldname,
+      };
+      resolve(fileInfo);
+    });
+  },
+  // destination: function (req, file, cb) {
+  //   const dir = "./public/uploads/" + file.fieldname + "/";
+  //   cb(null, dir);
+  // },
+  // filename: function (req, file, cb) {
+  //   cb(null, file.fieldname + "_" + Date.now() + "_" + file.originalname);
+  // },
+});
+const upload = multer({
+  storage: storage,
+  fileFilter: function (req, file, cb) {
+    if (
+      file.mimetype == "image/png" ||
+      file.mimetype == "image/jpeg" ||
+      file.mimetype == "application/pdf" ||
+      file.mimetype == "video/mp4" ||
+      file.mimetype == "video/mpeg"
+    ) {
+      cb(null, true);
+    } else {
+      cb(null, false);
+    }
+  },
+});
 
 app.get("/", function (req, res) {
   res.render("home");
@@ -77,17 +96,30 @@ app.get("/edit-profile/:id", profile.editProfile);
 app.get("/logout", login.logout);
 app.get("/delete/:course_ID", teacher.deleteCourse);
 app.get("/update-course/:course_ID", teacher.updateCourse);
-app.get("/:user", function (req, res) {
-  if (req.user.role === "teacher") res.redirect("/teacher/" + req.user._id);
-  else if (req.user.role === "student")
-    res.redirect("/student/" + req.user._id);
-});
+// app.get("/:user", function (req, res) {
+//   if (req.user.role === "teacher") res.redirect("/teacher/" + req.user._id);
+//   else if (req.user.role === "student")
+//     res.redirect("/student/" + req.user._id);
+// });
 app.get("/view-course/:course_id", teacher.viewCourse);
-app.post("/:user_id/verify", upload.single("identification"), teacher.verifyPOST);
+app.post(
+  "/:user_id/verify",
+  upload.single("identification"),
+  teacher.verifyPOST
+);
 app.post("/update/:user_id", profile.updateProfile);
-app.post("/teacher/:course_id/update-course-name",teacher.updateCourseNamePOST);
-app.post("/teacher/:course_id/update-course-desc", teacher.updateCourseDescPOST);
-app.post("/teacher/:course_id/update-course-price", teacher.updateCoursePricePOST);
+app.post(
+  "/teacher/:course_id/update-course-name",
+  teacher.updateCourseNamePOST
+);
+app.post(
+  "/teacher/:course_id/update-course-desc",
+  teacher.updateCourseDescPOST
+);
+app.post(
+  "/teacher/:course_id/update-course-price",
+  teacher.updateCoursePricePOST
+);
 app.post(
   "/teacher/:course_id/update-course-thumbnail",
   upload.fields([{ name: "thumbnail", maxCount: 1 }]),

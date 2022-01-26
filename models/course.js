@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 const reviewSchema = require("./review.js").reviewSchema;
+const videoSchema = require("./video.js").videoSchema;
 
 const courseSchema = new mongoose.Schema({
   title: String,
@@ -8,7 +9,7 @@ const courseSchema = new mongoose.Schema({
   image: String,
   teacher: String,
   teacherName: String,
-  video: [String],
+  video: [videoSchema],
   reviews: [reviewSchema],
 });
 

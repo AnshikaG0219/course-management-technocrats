@@ -64,24 +64,63 @@
         </h1>
       </div>
       <div class="content-player">
+        <% if(course[0].length === 0){ %>
+          <h1>No content</h1>
+          <% } else { %>
         <div class="row">
           <div class="col-4">
             <div class="list-group" id="list-tab" role="tablist">
-              <a class="list-group-item list-group-item-action" id="list-home-list" data-bs-toggle="list"
-                href="#list-home" role="tab" aria-controls="list-home">Home</a>
+              <a class="list-group-item list-group-item-action active" id="list-home-list" data-bs-toggle="list"
+                href="#lecture_<%= course[0].video[0]._id %>" role="tab" aria-controls="list-home" style="font-size:1.3rem;">
+                <% if(course[0].video[0].filetype === "application/pdf"){ %>
+                <i class="far fa-file-pdf" style="font-size:1.7rem; padding-right: 0.7rem;"></i>
+               <% }else{ %>
+                <i class="far fa-file-video" style="font-size:1.7rem; padding-right: 0.7rem;"></i>
+               <% } %>
+                <%= course[0].video[0].title.slice(0, -4) %>
+              </a>
+              <% for(var i=1; i<course[0].video.length; i++){ %>
+                <a class="list-group-item list-group-item-action" id="list-home-list" data-bs-toggle="list"
+                  href="#lecture_<%= course[0].video[i]._id %>" role="tab" aria-controls="list-home"  style="font-size:1.3rem;">
+                  <% if(course[0].video[i].filetype === "application/pdf"){ %>
+                  <i class="far fa-file-pdf" style="font-size:1.7rem; padding-right: 0.7rem;"></i>
+                  <% }else{ %>
+                  <i class="far fa-file-video" style="font-size:1.7rem; padding-right: 0.7rem;"></i>
+                  <% } %>
+                  <%= course[0].video[i].title.slice(0, -4) %>
+                </a>
+              <% } %>
             </div>
           </div>
           <div class="col-8">
             <div class="tab-content" id="nav-tabContent">
-              <div class="tab-pane fade show active" id="list-home" role="tabpanel" aria-labelledby="list-home-list">
-                <video width="1000" height="430" controls="controls">
-
-                  <source src="/lectures/lecture_1642866138115_video.mp4" type="video/mp4">
+              <div class="tab-pane fade show active" id="lecture_<%= course[0].video[0]._id %>" role="tabpanel"
+                aria-labelledby="list-home-list">
+                <% if(course[0].video[0].filetype === "application/pdf"){ %>
+                  <embed src="/uploads/lecture/<%= course[0].video[0].url %>" width="1000" height="500">
+                <% } else { %>
+                <video width="1000" height="500" controls="controls">
+                  <source src="/uploads/lecture/<%= course[0].video[0].url %>" type="video/mp4">
                 </video>
+                <% } %>
               </div>
+              <% for(var i=1; i<course[0].video.length; i++){ %>
+                <div class="tab-pane fade show" id="lecture_<%= course[0].video[i]._id %>" role="tabpanel"
+                  aria-labelledby="list-home-list">
+                  <% if(course[0].video[i].filetype === "application/pdf"){ %>
+                    <embed src="/uploads/lecture/<%= course[0].video[i].url %>" width="1000" height="500">
+                  <% } else { %>
+                  <video width="1000" height="500" controls="controls">
+                    <source src="/uploads/lecture/<%= course[0].video[i].url %>" type="video/mp4">
+                  </video>
+                  <% } %>
+                </div>
+                <% }%>
             </div>
           </div>
+
         </div>
+        <% }  %>
       </div>
       <div>
         <div class="btn-row d-flex flex-row align-items-start" style="padding-bottom: 2rem;">
@@ -94,6 +133,4 @@
       </div>
     </div>
   </section>
-
-
   <%- include("partials/footer.ejs"); %>

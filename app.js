@@ -13,15 +13,10 @@ const register = require("./routes/register");
 const student = require("./routes/student");
 const teacher = require("./routes/teacher");
 const profile = require("./routes/profile");
-const {GridFsStorage} = require("multer-gridfs-storage");
-const grid = require("gridfs-stream");
-const methodOverride = require("method-override");
 
-app.use(methodOverride("_method"));
 app.use(express.static(__dirname + "/public"));
 app.set("view engine", "ejs");
 app.use(express.urlencoded({ extended: true }));
-
 app.use(
   session({
     secret: process.env.SECRET,
@@ -36,30 +31,14 @@ passport.use(User.createStrategy());
 passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
 
-let gfs;
-// conn.once("open", () => {
-// });
-
-let storage = new GridFsStorage({
-  url: process.env.MONGO_URL,
-  file: (req, file) => {
-    return new Promise((resolve, reject) => {
-      const filename =
-        file.fieldname + "_" + Date.now() + "_" + file.originalname;
-      const fileInfo = {
-        filename: filename,
-        bucketName: file.fieldname,
-      };
-      resolve(fileInfo);
-    });
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    const dir = "./public/uploads/" + file.fieldname + "/";
+    cb(null, dir);
   },
-  // destination: function (req, file, cb) {
-  //   const dir = "./public/uploads/" + file.fieldname + "/";
-  //   cb(null, dir);
-  // },
-  // filename: function (req, file, cb) {
-  //   cb(null, file.fieldname + "_" + Date.now() + "_" + file.originalname);
-  // },
+  filename: function (req, file, cb) {
+    cb(null, file.fieldname + "_" + Date.now() + "_" + file.originalname);
+  },
 });
 const upload = multer({
   storage: storage,
@@ -95,6 +74,7 @@ app.get("/profile/:id", profile.profileGET);
 app.get("/edit-profile/:id", profile.editProfile);
 app.get("/logout", login.logout);
 app.get("/delete/:course_ID", teacher.deleteCourse);
+app.get("/delete-my-course/:course_id", student.deleteMyCourse);
 app.get("/update-course/:course_ID", teacher.updateCourse);
 // app.get("/:user", function (req, res) {
 //   if (req.user.role === "teacher") res.redirect("/teacher/" + req.user._id);

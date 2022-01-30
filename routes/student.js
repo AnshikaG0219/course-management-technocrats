@@ -1,5 +1,6 @@
 const passport = require("passport")
 const User = require("../models/user")
+const Course = require("../models/course").Course
 const mongoose = require("mongoose")
 
 exports.studentDash = (req, res) => {
@@ -18,6 +19,23 @@ const student_id = req.params.student_id;
     })
   } else {
     res.redirect("/login");
+  }
+}
+exports.deleteMyCourse = (req, res) => {
+  const courseID = req.params.course_id;
+  if(req.isAuthenticated())
+  {
+    User.findOneAndUpdate({_id: req.user._id}, {$pull:{purchase:{_id: courseID}}}, function(err, u){
+      console.log(u);
+      if(!err)
+      {
+        res.redirect(`/student/${req.user._id}/courses`)
+      }else{
+        console.log("can not delete course");
+      }
+    })
+  }else{
+    res.redirect("/login")
   }
 }
 exports.buyCourse = (req, res) => {

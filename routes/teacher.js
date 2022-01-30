@@ -2,7 +2,7 @@ const passport = require("passport");
 const User = require("../models/user");
 const Course = require("../models/course").Course;
 const mongoose = require("mongoose");
-const Video = require("../models/video").Video
+const Video = require("../models/video").Video;
 
 exports.teacherDash = (req, res) => {
   const teach_id = req.params.teach_id;
@@ -65,7 +65,6 @@ exports.addCoursePOST = (req, res) => {
       video: lectures,
       teacherName: req.user.name
     });
-    console.log(course);
     course.save(function (err) {
       if (!err) {
         res.redirect(`/teacher/${t_id}/courses`);
@@ -195,6 +194,7 @@ exports.viewCourse = (req, res) => {
   let course_id = req.params.course_id;
   if (req.isAuthenticated()) {
     Course.find({ _id: course_id }, function (err, c) {
+
       res.render(`view-course`, { user: req.user, course: c });
     });
     res;

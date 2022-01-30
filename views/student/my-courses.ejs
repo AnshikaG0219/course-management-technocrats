@@ -28,13 +28,13 @@
                     class="d-flex align-items-center justify-content-between btn-row">
                     <h6 class="font-weight-bold" style="font-size: 1.1rem; margin: 2rem 0; text-transform: capitalize;">Instructor: <%=c.teacherName%></h6>
                     <div class="flex-row justify-content-between">
-                      <a href="/delete/<%= c._id %>" style="color: rgb(205, 73, 73); font-size: 1.3rem"><i class="fas fa-trash"></i></a>
+                      <a href="/delete-my-course/<%= c._id %>" style="color: rgb(205, 73, 73); font-size: 1.3rem"><i class="fas fa-trash"></i></a>
                     </div>
                   </div>
                 </div>
                 <div>
                   <img
-                    src="/lectures/<%= c.image%>"
+                    src="/uploads/thumbnail/<%= c.image%>"
                     alt="Generic placeholder image"
                     width="150"
                     style="padding: 2rem; max-height: 10rem;"

@@ -102,12 +102,12 @@ app.post(
 );
 app.post(
   "/teacher/:course_id/update-course-thumbnail",
-  upload.fields([{ name: "thumbnail", maxCount: 1 }]),
+  upload.single('thumbnail'),
   teacher.updateCourseThumbPOST
 );
 app.post(
   "/teacher/:course_id/add-course-video",
-  upload.fields([{ name: "lecture" }]),
+  upload.array('lecture'),
   teacher.updateCourseVideoPOST
 );
 app.post(

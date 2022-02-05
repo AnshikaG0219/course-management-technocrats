@@ -97,11 +97,10 @@ exports.updateCourse = (req, res) => {
   }
 };
 exports.updateCourseThumbPOST = (req, res) => {
-  console.log(req.body);
   if (req.isAuthenticated()) {
     Course.findOneAndUpdate(
       { _id: req.params.course_id },
-      { $set: { image: req.files.thumbnail[0].filename } },
+      { $set: { image: req.file.filename } },
       { new: true },
       function (err, c) {
         if (err) console.log(err);
@@ -116,18 +115,25 @@ exports.updateCourseThumbPOST = (req, res) => {
 };
 exports.updateCourseVideoPOST = (req, res) => {
   const s_id = req.params.course_id;
+  console.log(s_id);
   if (req.isAuthenticated()) {
-    let lecture_name = [];
-    req.files.lecture.forEach((ele) => {
-      lecture_name.push(ele.filename);
+    console.log(req.files);
+    let lectures = [];
+    req.files.forEach((ele) => {
+      const video = new Video({
+        title: ele.originalname,
+        url: ele.filename,
+        filetype: ele.mimetype
+      })
+      video.save()
+      lectures.push(video);
     });
-
-    Course.findOne({ _id: s_id }, function (err, c) {
-      c.video.push({
-        $each: lecture_name,
+    Course.find({ _id: s_id }, function (err, c) {
+      console.log(c[0]);
+      c[0].video.push({
+        $each: lectures,
       });
-
-      c.save(function (err) {
+      c[0].save(function (err) {
         if (!err) {
           res.redirect(`/teacher/${req.user._id}/courses`);
         } else {

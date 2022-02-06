@@ -35,3 +35,9 @@ Verify the teachers | Submit an identification proof| Purchase course
     * [X] Login
     * [ ] Purchase Course
     * [x] View Course
+---
+### Contributors
+1. Anshika Gautam
+2. Ishita Chandra
+3. Shreya Mittal
+4. Sanya Bansal

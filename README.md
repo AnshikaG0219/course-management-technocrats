@@ -10,7 +10,7 @@ Verify the teachers | Submit an identification proof| Purchase course
 ### Compulsory Features
 * [x] Module Rights
 * [ ] Admin Dashboard
-* [x] Payment Gateway
+* [ ] Payment Gateway
 ---
 ### Additional Features
 * [ ] Student Feedback

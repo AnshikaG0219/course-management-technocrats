@@ -3,31 +3,78 @@
 <%}else{ %>
 <%-include("student/student-dash.ejs")%>
 <% } %>
-<div class="course-main">
-  <% courses.forEach(function(c){%>
-    <div class="course">
-      <form class="" id="temp" action="/payment/<%=c._id%>" method="post">
-        <a class="card">
-          <img src="/uploads/thumbnail/<%= c.image%>" class="card__image" alt="" />
-          <div class="card__overlay">
-            <div class="card__header">
-              <svg class="card__arc" xmlns="http://www.w3.org/2000/svg">
-                <path />
-              </svg>
-             <button type="submit" name="button" style="background: none; border: none; cursor: pointer"><i class="fas fa-shopping-cart" style="font-size: 1.3rem;"></i></button>
-              <div class="card__header-text">
-                <h3 class="card__title"><span><%= c.title%></span> <span>&#8377; <%= c.price%></span></h3>
-                <span class="card__status">By <%= c.teacherName %> </span>
-              </div>
+  <div class="course-main">
+    <% courses.forEach(function(c){%>
+      <div class="course">
+        <!-- <form class="" id="temp"> -->
+          <a class="card">
+            <img src="/uploads/thumbnail/<%= c.image%>" class="card__image" alt="" />
+            <div class="card__overlay">
+              <div class="card__header">
+                <svg class="card__arc" xmlns="http://www.w3.org/2000/svg">
+                  <path />
+                </svg>
+                <p id="course-id" style="display: none;"><%= c._id%></p>
+                <button id="<%= c._id%>" name="button" style="background: none; border: none; cursor: pointer;" onclick="pass_details(this.id)"> <!--onclick="pass_details(e)"-->
+                  <i class="fas fa-shopping-cart" style="font-size: 1.3rem;"></i>
+              </button>
+  
+                <div class="card__header-text">
+                  <h3 class="card__title"><span>
+                      <%= c.title%>
+                    </span> <span id="cost<%= c._id%>">&#8377; <%= c.price%></span></h3>
+                  <span class="card__status">By <%= c.teacherName %> </span>
+                </div>
+                </div>
+                <p class="card__description">
+                <%= c.description%>
+              </p>
             </div>
-            <p class="card__description">
-              <%= c.description%>
-            </p>
-          </div>
-        </a>
-      </form>
-
+          </a>
+        <!-- </form> -->
+  
+    </div>
+      <% }) %>
   </div>
-    <% }) %>
-</div>
-<%-include("partials/dash-footer.ejs")%>
+  
+  <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+  <!--Axios cdn-->
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script> 
+  <script>
+  
+      function pass_details (course_id) {
+  
+        axios.post('/order', {
+                amount: Number(document.getElementById("cost"+course_id).innerText.split(' ')[1]) * 100,
+                currency: "INR"
+        }).then((info) => {
+            // console.log(info);
+            var options = {
+                "key": "<%= key%>",
+                "name": "iLearn",
+                "description": "Course Purchase Gateway",
+                "image": "https://i.ibb.co/7XGwqQC/ilearn-logo.png",
+                "order_id": info.data.id,
+                "callback_url": `/is-order-complete/${course_id}`,
+                "prefill": {
+                    "name": "iLearn",
+                    "email": "ss@gmail.com",
+                    "contact": "9878908679"
+                },
+                "notes": {
+                    "address": "Razorpay Corporate Office"
+                },
+                "theme": {
+                    "color": "#3399cc"
+                }
+            };
+            var rzp1 = new Razorpay(options);
+            rzp1.open();
+        })
+        .catch((err) => {
+          console.log(err.message);
+        });
+      }
+  </script>
+  
+<%-include("partials/dash-footer.ejs")%>  

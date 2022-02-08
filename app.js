@@ -14,6 +14,23 @@ const student = require("./routes/student");
 const teacher = require("./routes/teacher");
 const profile = require("./routes/profile");
 
+const axios = require("axios");
+const cors = require('cors')
+const bodyParser = require('body-parser')
+const crypto = require('crypto')
+const Razorpay = require('razorpay')
+
+app.use(cors());
+app.use(express.json());
+app.use(
+    bodyParser.urlencoded({
+        extended: false
+    })
+);
+
+app.use(bodyParser.json());
+
+
 app.use(express.static(__dirname + "/public"));
 app.set("view engine", "ejs");
 app.use(express.urlencoded({ extended: true }));
@@ -67,7 +84,7 @@ app.get("/student/:student_id/courses", student.myCourses);
 app.get("/teacher/:teach_id", teacher.teacherDash);
 app.get("/teacher/:teach_id/courses", teacher.myCourses);
 app.get("/buy-course", student.buyCourse);
-app.post("/payment/:course_id", student.pay);
+app.get("/payment/:course_id", student.pay);
 app.get("/:user_id/verify", teacher.verifyGET);
 app.get("/teacher/:teach_id/add-course", teacher.addCourse);
 app.get("/profile/:id", profile.profileGET);
@@ -121,3 +138,27 @@ app.post("/register", register.registerPOST);
 app.listen(process.env.PORT || 3000, function () {
   console.log("Server started at port 3000");
 });
+
+// Razorpay
+const razorpay = new Razorpay({
+  key_id: process.env.KEY_ID,
+  key_secret: process.env.KEY_SECRET
+})
+
+app.post('/order', ( req, res ) => {
+  let options = req.body;
+  razorpay.orders.create(options, (err, order) => {
+      res.json(order)
+  })
+})
+
+app.post('/is-order-complete/:course_id', ( req, res ) => {
+  razorpay.payments.fetch(req.body.razorpay_payment_id).then((paymentDocument) => {  
+    if(paymentDocument.status == 'captured') {
+          console.log("Payment Successful");
+          res.redirect(`/payment/${req.params.course_id}`);
+      } else {
+          res.redirect('/login');
+      }
+  })
+})

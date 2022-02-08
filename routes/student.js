@@ -1,7 +1,9 @@
+require("dotenv").config();
 const passport = require("passport")
 const User = require("../models/user")
 const Course = require("../models/course").Course
-const mongoose = require("mongoose")
+const mongoose = require("mongoose");
+const { use } = require("passport");
 
 exports.studentDash = (req, res) => {
 const stud_id = req.params.stud_id;
@@ -38,13 +40,15 @@ exports.deleteMyCourse = (req, res) => {
     res.redirect("/login")
   }
 }
+
 exports.buyCourse = (req, res) => {
   if (req.isAuthenticated()) {
     Course.find({}, function (err, c) {
-      res.render("courses", { user: req.user, courses: c });
+      res.render("courses", { user: req.user, courses: c, key: process.env.KEY_ID });
     });
   } else res.redirect("/login");
 }
+
 exports.pay = (req, res) => {
   let user = req.user._id;
   const course_id = req.params.course_id;
@@ -56,6 +60,7 @@ exports.pay = (req, res) => {
         u[0].purchase.push(c);
         u[0].save(res.redirect('/buy-course'));
       })
+      console.log("Purchased course added to My Courses");
     })
   }else {
     res.redirect("/login");

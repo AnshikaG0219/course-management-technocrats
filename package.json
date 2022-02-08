@@ -18,19 +18,24 @@
   },
   "homepage": "https://github.com/AnshikaG0219/course-management-technocrats#readme",
   "dependencies": {
+    "axios": "^0.25.0",
+    "body-parser": "^1.19.1",
     "bootstrap-icons": "^1.7.2",
-    "dotenv": "^14.2.0",
+    "cors": "^2.8.5",
+    "crypto": "^1.0.1",
+    "dotenv": "^14.3.2",
     "ejs": "^3.1.6",
     "express": "^4.17.2",
     "express-session": "^1.17.2",
     "feather-icons": "^4.28.0",
     "gridfs-stream": "^1.1.1",
     "method-override": "^3.0.0",
-    "mongoose": "^6.1.8",
+    "mongoose": "^6.2.1",
     "multer": "^1.4.4",
     "multer-gridfs-storage": "^5.0.2",
     "passport": "^0.5.2",
     "passport-local": "^1.0.0",
-    "passport-local-mongoose": "^6.1.0"
+    "passport-local-mongoose": "^6.1.0",
+    "razorpay": "^2.8.0"
   }
 }
